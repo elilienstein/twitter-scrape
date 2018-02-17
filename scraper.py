@@ -5,6 +5,9 @@ from textblob import TextBlob
 from sqlalchemy.exc import ProgrammingError
 import json
 
+with open('private.py') as f:
+   creds = json.load(f)
+
 db = dataset.connect(settings.CONNECTION_STRING)
 
 class StreamListener(tweepy.StreamListener):
@@ -60,8 +63,12 @@ class StreamListener(tweepy.StreamListener):
             #returning False in on_data disconnects the stream
             return False
 
-auth = tweepy.OAuthHandler(settings.TWITTER_APP_KEY, settings.TWITTER_APP_SECRET)
-auth.set_access_token(settings.TWITTER_KEY, settings.TWITTER_SECRET)
+consumer_key = creds['consumer_key']
+consumer_secret = creds['consumer_secret']
+access_token = creds['access_token']
+access_token_secret = creds['access_token_secret']
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
 stream_listener = StreamListener()
